@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anime Reviews</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: black;
+      color: gold;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      text-align: center;
+    }
+    h1 {
+      font-size: 36px;
+    }
+    h2 {
+      font-size: 24px;
+    }
+    p {
+      font-size: 18px;
+      line-height: 1.6;
+    }
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    li {
+      margin-bottom: 10px;
+    }
+    a {
+      color: gold;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    .hidden {
+      display: none;
+    }
+    .review-button {
+      background-color: red;
+      color: gold;
+      padding: 10px 20px;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      margin-top: 20px;
+    }
+    .review-content {
+      background-color: black;
+      padding: 20px;
+      border-radius: 5px;
+      margin-top: 20px;
+      color: red; /* Changed text color to red */
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Welcome to Anime Reviews!</h1>
+    <p>Explore the fascinating world of anime with our curated reviews. Search for your favorite anime and read detailed reviews.</p>
+    <input type="text" id="searchInput" placeholder="Search for anime...">
+    <ul id="suggestedAnimeList" class="hidden"></ul>
+    <h2 id="noAnimeFound" class="hidden">No reviews available for the searched anime</h2>
+    <h2 id="selectedAnime" class="hidden">Selected Anime: <span id="selectedAnimeName"></span></h2>
+    <button id="animeListButton" class="review-button">Anime List</button>
+    <div id="animeListContent" class="hidden"></div>
+    <div id="animeReviewContent" class="review-content hidden"></div>
+    <h2>Contact</h2>
+    <p>Have any questions or suggestions? Feel free to reach out to us:</p>
+    <p>Email: <a href="mailto:your_email@example.com">your_email@example.com</a></p>
+    <p>Connect on social media:</p>
+    <p>
+      <a href="https://instagram.com/your_instagram">Your Instagram</a>
+    </p>
+  </div>
+
+  <script>
+    var animeList = [
+      { name: "Naruto", review: "Step into the hidden world of ninjas and embark on an unforgettable journey alongside Naruto Uzumaki. With over 700 episodes, this epic saga explores themes of friendship, perseverance, and the pursuit of dreams. From the sprawling landscapes of the Leaf Village to the heart-pounding battles against formidable foes, Naruto is a timeless adventure that will leave you craving for more." },
+      { name: "Attack on Titan", review: "In a world besieged by towering titans, humanity's survival hangs by a thread. Attack on Titan thrusts you into a relentless struggle for survival, where the line between friend and foe blurs amidst the chaos. With its intense action sequences, intricate plot twists, and haunting mysteries, this anime is a gripping tale of courage, sacrifice, and the fight for freedom." },
+      { name: "One Piece", review: "Embark on a swashbuckling adventure of epic proportions with Monkey D. Luffy and his crew of pirates. One Piece isn't just an anime; it's a treasure trove of imagination, spanning over 900 episodes of high-seas hijinks, legendary battles, and heartfelt camaraderie. Join the Straw Hat Pirates on their quest for the fabled One Piece, where every island holds a new adventure and every foe is a potential ally in disguise." },
+      // Include all other anime reviews here
+      { name: "Death Note", review: "Enter the realm of psychological warfare with Death Note, a mind-bending thriller that will keep you on the edge of your seat. When a high school prodigy discovers a supernatural notebook capable of killing anyone whose name is written in it, a deadly game of cat and mouse ensues with the world's greatest detective. As Light Yagami manipulates the forces of life and death, morality becomes blurred in a gripping battle of intellect and ideology." },
+      { name: "Dragon Ball Z", review: "Unleash your inner warrior and join Goku and his friends in a battle to protect Earth from cosmic threats. Dragon Ball Z isn't just an anime; it's a cultural phenomenon that has shaped generations with its iconic battles, unforgettable characters, and larger-than-life spirit. From the depths of the Saiyan saga to the epic showdowns against powerful villains, this series is a timeless testament to the power of determination, friendship, and the human spirit." },
+      { name: "Fullmetal Alchemist: Brotherhood", review: "Alchemy meets destiny in Fullmetal Alchemist: Brotherhood, a gripping tale of two brothers bound by tragedy and redemption. Set in a world where alchemy reigns supreme, Edward and Alphonse Elric embark on a journey to reclaim what they've lost and uncover the secrets of the Philosopher's Stone. With its rich world-building, complex characters, and profound themes of sacrifice and redemption, this anime is a masterpiece that will resonate with viewers long after the final episode." },
+      { name: "Steins;Gate", review: "Prepare to have your perception of time and reality shattered in Steins;Gate, a mind-bending thriller that blurs the lines between science and fiction. When a group of friends accidentally discovers a way to send messages to the past, they unwittingly unleash a chain of events with catastrophic consequences. With its intricate plot twists, lovable characters, and deep philosophical questions, Steins;Gate is a gripping journey through the mysteries of time travel." },
+      { name: "Cowboy Bebop", review: "Buckle up for a wild ride through space with the bounty hunters of Cowboy Bebop. Set in a futuristic world where jazz meets noir, this stylish anime follows the misadventures of Spike Spiegel and his eclectic crew as they chase down criminals across the galaxy. With its blend of action, humor, and existential themes, Cowboy Bebop is a genre-defying classic that continues to captivate audiences with its timeless coolness." },
+      { name: "Code Geass", review: "Witness the rise of an antihero in Code Geass, a thrilling tale of power, rebellion, and moral ambiguity. When an exiled prince gains the power to command obedience, he sets out to overthrow an oppressive regime and create a better world. But as his actions escalate, the line between hero and villain begins to blur, leading to a breathtaking climax filled with twists, betrayals, and the ultimate sacrifice." },
+      { name: "Neon Genesis Evangelion", review: "Experience the apocalypse like never before in Neon Genesis Evangelion, a groundbreaking mecha series that redefines the genre. Set in a post-apocalyptic world ravaged by mysterious beings known as Angels, this anime delves into the psychological struggles of its young pilots as they pilot giant robots to defend humanity's last bastion. With its deep themes of identity, existentialism, and the nature of consciousness, Neon Genesis Evangelion is a mind-bending journey into the darkest corners of the human psyche." },
+      { name: "One Punch Man", review: "Prepare for a superhero satire like no other in One Punch Man, a hilarious and action-packed romp through the world of superheroes and villains. Follow Saitama, a seemingly ordinary man who can defeat any opponent with a single punch, as he navigates the absurdities of superhero life. With its irreverent humor, jaw-dropping battles, and clever deconstruction of superhero tropes, One Punch Man is a must-watch for fans of the genre." },
+      { name: "Hunter x Hunter", review: "Embark on an exhilarating adventure through a world of monsters, magic, and mayhem in Hunter x Hunter. Follow Gon Freecss, a young boy determined to become a Hunter and find his long-lost father, as he journeys to the Hunter Exam, where danger lurks around every corner. With its diverse cast of characters, intricate power systems, and epic battles, Hunter x Hunter is a shonen classic that continues to captivate audiences with its boundless imagination." },
+      { name: "My Hero Academia", review: "In a world where superpowers, known as Quirks, are the norm, My Hero Academia follows the journey of Izuku Midoriya, a Quirkless boy who dreams of becoming a hero. When he inherits the legendary power of All Might, the Symbol of Peace, Izuku enrolls in U.A. High School to train alongside other aspiring heroes. With its dynamic characters, pulse-pounding action, and themes of courage and camaraderie, My Hero Academia is a superhero epic for the ages." },
+      { name: "Demon Slayer: Kimetsu no Yaiba", review: "Enter a world of demons and demon slayers in Demon Slayer: Kimetsu no Yaiba, a visually stunning anime that combines breathtaking animation with heart-pounding action. Follow Tanjiro Kamado, a young boy who becomes a demon slayer after his family is slaughtered by demons, as he embarks on a quest to avenge their deaths and cure his sister, who has been transformed into a demon. With its gorgeous visuals, emotional storytelling, and unforgettable characters, Demon Slayer: Kimetsu no Yaiba is a modern masterpiece that will leave you breathless." },
+      { name: "Tokyo Ghoul", review: "Explore the dark underbelly of Tokyo in Tokyo Ghoul, a visceral tale of survival, identity, and the struggle for acceptance. When college student Ken Kaneki is transformed into a half-ghoul after a chance encounter with a beautiful girl, he is thrust into a world of flesh-eating monsters and clandestine organizations. With its intense action, complex characters, and thought-provoking themes, Tokyo Ghoul is a gripping exploration of what it means to be human in a world consumed by darkness." },
+      { name: "Sword Art Online", review: "Step into the immersive virtual world of Sword Art Online, where players must fight for their lives in a deadly game of survival. When thousands of players become trapped in the virtual reality MMORPG Sword Art Online, they must band together to defeat the game's creator and escape back to the real world. With its stunning animation, pulse-pounding action, and heartfelt romance, Sword Art Online is a captivating adventure that blurs the lines between fantasy and reality." },
+      { name: "Fairy Tail", review: "Join the mages of Fairy Tail Guild on their quest for adventure, friendship, and a little bit of mischief in Fairy Tail. Set in the magical world of Earth Land, this anime follows the exploits of Natsu Dragneel and his friends as they take on dangerous missions, battle powerful foes, and forge unbreakable bonds of camaraderie. With its colorful cast of characters, epic battles, and heartwarming moments, Fairy Tail is a feel-good fantasy series that will leave you spellbound." },
+      { name: "Mob Psycho 100", review: "Prepare to be blown away by Mob Psycho 100, a visually stunning anime that defies expectations at every turn. Follow Shigeo 'Mob' Kageyama, a seemingly ordinary boy with extraordinary psychic powers, as he navigates the challenges of adolescence while battling malevolent spirits and nefarious organizations. With its breathtaking animation, offbeat humor, and profound messages about self-acceptance and personal growth, Mob Psycho 100 is a must-watch for fans of the supernatural genre." },
+      { name: "The Promised Neverland", review: "Enter a world of mystery and suspense in The Promised Neverland, a psychological thriller that will keep you on the edge of your seat until the very end. Set in an orphanage run by a loving caretaker, Emma, Norman, and Ray lead a happy life until they discover the dark truth behind their idyllic existence. With its gripping plot twists, compelling characters, and atmospheric tension, The Promised Neverland is a haunting tale of survival and betrayal that will leave you craving for more." },
+      { name: "Death Parade", review: "Step into the afterlife and experience the ultimate test of morality in Death Parade, a thought-provoking anime that explores the nature of life, death, and the human soul. When souls arrive at Quindecim, a mysterious bar staffed by enigmatic bartenders, they are forced to participate in deadly games that reveal their true selves. With its stunning visuals, haunting soundtrack, and existential themes, Death Parade is a mesmerizing journey into the unknown that will challenge your perceptions of what it means to be alive." },
+      { name: "Black Clover", review: "Dive into a world of magic and mayhem in Black Clover, a high-octane anime filled with action, adventure, and endless possibilities. Follow Asta and Yuno, two orphaned boys with dreams of becoming the Wizard King, as they journey through the treacherous world of Clover Kingdom, where magic reigns supreme. With its dynamic characters, pulse-pounding battles, and epic storytelling, Black Clover is a spellbinding adventure that will leave you spellbound." },
+      { name: "Haikyuu!!", review: "Experience the thrill of victory and the agony of defeat in Haikyuu!!, a heart-pounding sports anime that will leave you cheering for more. Follow Shoyo Hinata and Tobio Kageyama as they join forces to revive their high school's volleyball team and compete against the best players in Japan. With its dynamic animation, exhilarating matches, and lovable characters, Haikyuu!! is a slam dunk of an anime that captures the spirit of teamwork, determination, and the pursuit of excellence." },
+      { name: "JoJo's Bizarre Adventure", review: "Prepare for a wild ride through the ages in JoJo's Bizarre Adventure, a stylish and surreal anime that defies explanation. Follow the Joestar family across generations as they battle supernatural forces, uncover ancient mysteries, and unleash their unique powers, known as Stands. With its over-the-top action, outlandish characters, and iconic poses, JoJo's Bizarre Adventure is a one-of-a-kind experience that will leave you breathless." },
+      { name: "Demon Slayer: Kimetsu no Yaiba", review: "Prepare for an emotional rollercoaster in Demon Slayer: Kimetsu no Yaiba, a visually stunning anime that combines breathtaking animation with heartfelt storytelling. Follow Tanjiro Kamado, a young boy who becomes a demon slayer after his family is slaughtered by demons, as he embarks on a quest to avenge their deaths and cure his sister, who has been transformed into a demon. With its gorgeous visuals, memorable characters, and poignant themes of love and sacrifice, Demon Slayer: Kimetsu no Yaiba is an unforgettable journey that will tug at your heartstrings." },
+      { name: "One Piece", review: "Embark on a grand adventure across the high seas in One Piece, a swashbuckling anime filled with action, humor, and heart. Join Monkey D. Luffy and his crew of pirates as they search for the legendary One Piece treasure and face off against powerful foes along the way. With its colorful characters, epic battles, and boundless sense of adventure, One Piece is a timeless classic that will capture your imagination and steal your heart." },
+      { name: "Naruto", review: "Follow the journey of Naruto Uzumaki, a spirited ninja with dreams of becoming the strongest ninja in his village and earning the title of Hokage. With its action-packed battles, heartfelt friendships, and inspirational message of never giving up, Naruto is a shonen classic that has captivated audiences around the world. Join Naruto and his friends on their quest for glory and witness the power of determination in the face of adversity." },
+      { name: "Attack on Titan", review: "Enter a world besieged by towering titans and join the fight for humanity's survival in Attack on Titan. Follow Eren Yeager and his friends as they enlist in the military and battle against the monstrous titans that threaten to devour humanity. With its intense action, gripping plot twists, and thought-provoking themes, Attack on Titan is a pulse-pounding anime experience that will keep you on the edge of your seat until the very end." },
+      { name: "Dragon Ball Z", review: "Unleash your inner Saiyan and join Goku and his friends in a battle to protect Earth from cosmic threats in Dragon Ball Z. With its iconic battles, larger-than-life characters, and epic transformations, Dragon Ball Z is a timeless classic that has inspired generations of fans around the world. Follow Goku as he faces off against powerful foes, pushes his limits, and achieves new levels of power in his quest to become the greatest warrior in the universe." },
+      { name: "Fullmetal Alchemist: Brotherhood", review: "Alchemy meets adventure in Fullmetal Alchemist: Brotherhood, a thrilling anime that explores the bonds of brotherhood and the price of power. Follow Edward and Alphonse Elric as they search for the Philosopher's Stone, a mythical artifact that can restore their bodies after a failed alchemical experiment. With its rich world-building, complex characters, and powerful themes, Fullmetal Alchemist: Brotherhood is a masterpiece of storytelling that will leave a lasting impression on viewers." },
+      { name: "Steins;Gate", review: "Prepare to have your mind blown in Steins;Gate, a mind-bending anime that explores the consequences of time travel. Follow Rintarou Okabe and his friends as they accidentally discover a way to send messages to the past and unwittingly alter the course of history. With its intricate plot twists, lovable characters, and deep philosophical themes, Steins;Gate is a gripping journey through the mysteries of time and space." },
+      { name: "Cowboy Bebop", review: "Buckle up for a wild ride through space in Cowboy Bebop, a stylish anime that blends jazz, noir, and science fiction into a one-of-a-kind experience. Follow Spike Spiegel and his crew of bounty hunters as they travel the galaxy in search of their next big score. With its memorable characters, iconic soundtrack, and genre-defying storytelling, Cowboy Bebop is a classic anime that continues to captivate audiences with its timeless coolness." },
+      { name: "Code Geass", review: "Experience the thrill of rebellion in Code Geass, a gripping anime that combines political intrigue with mecha action. Follow Lelouch vi Britannia as he rises up against an oppressive regime and leads a rebellion to overthrow the government. With its complex characters, twisty plot, and thought-provoking themes, Code Geass is a must-watch for fans of action and drama." },
+      { name: "Neon Genesis Evangelion", review: "Step into the apocalypse in Neon Genesis Evangelion, a groundbreaking anime that redefines the mecha genre. Follow Shinji Ikari and his fellow pilots as they battle against mysterious beings known as Angels to save humanity from destruction. With its deep themes, complex characters, and mind-bending plot twists, Neon Genesis Evangelion is a must-watch for any anime fan." },
+      { name: "One Punch Man", review: "Prepare to be blown away in One Punch Man, a hilarious anime that turns the superhero genre on its head. Follow Saitama, a hero who can defeat any opponent with a single punch, as he battles monsters, villains, and bureaucracy. With its irreverent humor, jaw-dropping action, and clever satire, One Punch Man is a must-watch for fans of superheroes." },
+      { name: "Hunter x Hunter", review: "Embark on an epic adventure in Hunter x Hunter, a shonen anime that combines action, adventure, and friendship. Follow Gon Freecss as he sets out to become a Hunter and find his long-lost father. With its colorful characters, imaginative world-building, and epic battles, Hunter x Hunter is a must-watch for any anime fan." },
+      { name: "My Hero Academia", review: "Discover the power of heroism in My Hero Academia, a shonen anime that celebrates courage, friendship, and the indomitable human spirit. Follow Izuku Midoriya as he enrolls in U.A. High School to train as a hero and protect the world from villains. With its dynamic characters, pulse-pounding action, and inspiring message, My Hero Academia is a must-watch for fans of superheroes." },
+      { name: "Demon Slayer: Kimetsu no Yaiba", review: "Experience the power of family in Demon Slayer: Kimetsu no Yaiba, an emotionally resonant anime that combines stunning visuals with heartfelt storytelling. Follow Tanjiro Kamado as he embarks on a quest to avenge his family and cure his sister, who has been transformed into a demon. With its breathtaking animation, memorable characters, and poignant themes, Demon Slayer: Kimetsu no Yaiba is a modern classic that will leave a lasting impression." },
+      { name: "Tokyo Ghoul", review: "Explore the dark side of humanity in Tokyo Ghoul, a visceral anime that delves into the depths of despair and madness. Follow Ken Kaneki as he grapples with his newfound identity as a half-ghoul and struggles to find his place in a world consumed by violence and prejudice. With its intense action, complex characters, and thought-provoking themes, Tokyo Ghoul is a must-watch for fans of horror and psychological drama." },
+      { name: "Sword Art Online", review: "Step into a virtual reality in Sword Art Online, an immersive anime that explores the boundaries between fantasy and reality. Follow Kirito as he navigates the perilous world of Aincrad, where players must fight for their lives in a deadly game. With its stunning animation, pulse-pounding action, and heartfelt romance, Sword Art Online is a must-watch for fans of virtual reality and MMORPGs." },
+      { name: "Fairy Tail", review: "Join the guild of Fairy Tail in Fairy Tail, a magical anime filled with adventure, friendship, and a touch of romance. Follow Natsu Dragneel and his friends as they take on dangerous missions, battle powerful foes, and forge unbreakable bonds of camaraderie. With its colorful characters, epic battles, and heartwarming moments, Fairy Tail is a feel-good fantasy series that will leave you spellbound." },
+      { name: "Mob Psycho 100", review: "Prepare to be amazed in Mob Psycho 100, a visually stunning anime that combines breathtaking animation with heartfelt storytelling. Follow Shigeo 'Mob' Kageyama as he grapples with his psychic powers and navigates the challenges of adolescence. With its offbeat humor, dynamic characters, and powerful themes, Mob Psycho 100 is a must-watch for fans of the supernatural genre." },
+      { name: "The Promised Neverland", review: "Enter a world of mystery and suspense in The Promised Neverland, a psychological thriller that will keep you on the edge of your seat until the very end. Follow Emma, Norman, and Ray as they uncover the dark secrets of their idyllic orphanage and fight for survival against insurmountable odds. With its gripping plot twists, compelling characters, and atmospheric tension, The Promised Neverland is a must-watch for fans of suspense and horror." },
+      { name: "Death Parade", review: "Step into the afterlife in Death Parade, a thought-provoking anime that explores the nature of life, death, and the human soul. Follow Decim, a mysterious bartender who judges the souls of the deceased in a series of deadly games. With its stunning visuals, haunting soundtrack, and existential themes, Death Parade is a mesmerizing journey into the unknown that will challenge your perceptions of what it means to be alive." },
+      { name: "Black Clover", review: "Dive into a world of magic and adventure in Black Clover, a high-energy anime that delivers action, humor, and heart in equal measure. Follow Asta and his friends as they strive to become the greatest mages in the Clover Kingdom and protect their homeland from dark forces. With its dynamic characters, pulse-pounding battles, and epic storytelling, Black Clover is a spellbinding adventure that will leave you spellbound." },
+      { name: "Haikyuu!!", review: "Experience the thrill of victory and the agony of defeat in Haikyuu!!, a pulse-pounding sports anime that captures the spirit of teamwork, determination, and the pursuit of excellence. Follow Shoyo Hinata and Tobio Kageyama as they lead their high school volleyball team to victory against formidable opponents. With its dynamic animation, exhilarating matches, and lovable characters, Haikyuu!! is a slam dunk of an anime that will leave you cheering for more." },
+      { name: "JoJo's Bizarre Adventure", review: "Prepare for a bizarre adventure in JoJo's Bizarre Adventure, a stylish and surreal anime that defies explanation. Follow the Joestar family across generations as they battle supernatural forces, uncover ancient mysteries, and unleash their unique powers, known as Stands. With its over-the-top action, outlandish characters, and iconic poses, JoJo's Bizarre Adventure is a one-of-a-kind experience that will leave you breathless." }
+    ];
+
+    // Function to display suggested anime
+    function displaySuggestedAnime() {
+      var input = document.getElementById('searchInput').value.trim().toLowerCase();
+      var suggestedAnimeList = document.getElementById('suggestedAnimeList');
+      var noAnimeFound = document.getElementById('noAnimeFound');
+
+      // Clear previous suggestions
+      suggestedAnimeList.innerHTML = '';
+      noAnimeFound.classList.add('hidden');
+
+      // Filter anime list based on input
+      var filteredAnime = animeList.filter(function(anime) {
+        return anime.name.toLowerCase().includes(input);
+      });
+
+      // Remove duplicate suggestions
+      var uniqueAnimeNames = [...new Set(filteredAnime.map(anime => anime.name))];
+
+      // Display suggestions or 'No anime found' message
+      if (uniqueAnimeNames.length > 0) {
+        uniqueAnimeNames.forEach(function(name) {
+          var listItem = document.createElement('li');
+          var link = document.createElement('a');
+          link.href = '#';
+          link.textContent = name;
+          link.addEventListener('click', function() {
+            selectAnime(animeList.find(anime => anime.name.toLowerCase() === name.toLowerCase()));
+          });
+          listItem.appendChild(link);
+          suggestedAnimeList.appendChild(listItem);
+        });
+        suggestedAnimeList.classList.remove('hidden');
+      } else {
+        noAnimeFound.classList.remove('hidden');
+      }
+    }
+
+    // Function to select an anime
+    function selectAnime(selectedAnime) {
+      var selectedAnimeName = document.getElementById('selectedAnimeName');
+      var animeReviewContent = document.getElementById('animeReviewContent');
+      var animeListContent = document.getElementById('animeListContent');
+      var selectedAnimeSection = document.getElementById('selectedAnime');
+      
+      selectedAnimeName.textContent = selectedAnime.name;
+      animeReviewContent.textContent = selectedAnime.review;
+      animeListContent.classList.add('hidden');
+      selectedAnimeSection.classList.remove('hidden');
+      animeReviewContent.classList.remove('hidden');
+    }
+
+    // Function to show anime list
+    document.getElementById('animeListButton').addEventListener('click', function() {
+      var animeListContent = document.getElementById('animeListContent');
+      var animeListButton = document.getElementById('animeListButton');
+      var selectedAnimeSection = document.getElementById('selectedAnime');
+      var animeReviewContent = document.getElementById('animeReviewContent');
+      
+      animeListContent.innerHTML = '';
+      animeReviewContent.classList.add('hidden');
+      selectedAnimeSection.classList.add('hidden');
+      animeList.forEach(function(anime) {
+        var listItem = document.createElement('div');
+        listItem.textContent = anime.name;
+        animeListContent.appendChild(listItem);
+      });
+      animeListContent.classList.remove('hidden');
+    });
+
+    // Add event listener for search input
+    document.getElementById('searchInput').addEventListener('input', displaySuggestedAnime);
+  </script>
+</body>
+</html>
